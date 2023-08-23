@@ -2,7 +2,7 @@
   "name": "your-api-name",
   "version": "1.0.0",
   "scripts": {
-    "start": "netlify-lambda serve src/functions"
+    "start": "netlify-lambda serve /functions"
   },
   "dependencies": {
     "cors": "^2.8.5",
