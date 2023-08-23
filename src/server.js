@@ -1,8 +1,15 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-const PORT = 3000;
 const weatherData = require('./data/weather.json'); // Assuming weather.json is in a "data" folder at the same level as your server file.
+const express = require('express');
+const cors = require('cors');
+const serverlessHttp = require('serverless-http');
+const app = express();
+// Setup CORS
+const corsOptions = {
+  origin: 'https://magenta-stardust-08f1b6.netlify.app',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 
 app.get('/', (req, res) => {
   const { lat, lon, searchQuery } = req.query;
@@ -51,3 +58,4 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+module.exports.handler = serverlessHttp(app);

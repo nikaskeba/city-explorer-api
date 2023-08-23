@@ -5,6 +5,7 @@
     "start": "netlify-lambda serve src/functions"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "your-version",
     "serverless-http": "your-version"
   }
