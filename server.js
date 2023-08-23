@@ -25,6 +25,22 @@ app.get('/', (req, res) => {
   res.send(city);
 });
 
+class Forecast {
+    constructor(date, description) {
+        this.date = date;
+        this.description = description;
+    }
+}
+
+const extractForecasts = (cityData) => {
+    const forecasts = cityData.data.map(day => {
+        const date = day.valid_date;
+        const description = day.weather.description;
+        return new Forecast(date, description);
+    });
+    return forecasts;
+}
+
 
 // Catch-all for undefined routes
 app.use((req, res, next) => {
