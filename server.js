@@ -1,34 +1,30 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const PORT = 3009;
-
-// ... any other middleware or routes ...
+const PORT = 3000;
+const weatherData = require('./data/weather.json'); // Assuming weather.json is in a "data" folder at the same level as your server file.
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'data', 'weather.json'));
-
-     const { lat, lon, searchQuery } = req.query; // extract the parameters from the request
+  const { lat, lon, searchQuery } = req.query;
 
   if (!lat || !lon || !searchQuery) {
-    return res.status(400).send("Missing required query parameters: lat, lon, or searchQuery");
+      return res.status(400).send("Missing required query parameters: lat, lon, or searchQuery");
   }
 
-  const city = cities.find(c => 
-    c.lat === parseFloat(lat) && 
-    c.lon === parseFloat(lon) && 
-    c.searchQuery.includes(searchQuery.toLowerCase())
+  // Search for a matching city
+  const city = weatherData.find(c => 
+    c.lat === lat && 
+    c.lon === lon && 
+    c.city_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (!city) {
-    return res.status(404).send("City not found or search query did not match any city.");
+      return res.status(404).send("City not found or search query did not match any city.");
   }
 
   res.send(city);
-
-
-
 });
+
 
 // Catch-all for undefined routes
 app.use((req, res, next) => {
