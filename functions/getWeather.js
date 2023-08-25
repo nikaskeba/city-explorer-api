@@ -24,4 +24,28 @@ app.get('/.netlify/functions/getWeather', async (req, res) => {
   }
 });
 
+
+
+app.get('/.netlify/functions/getMovies', async (req, res) => {
+  try {
+    const { city } = req.query;
+        res.setHeader('Access-Control-Allow-Origin', 'https://magenta-stardust-08f1b6.netlify.app');
+
+    const movieEndpoint = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&query=${city}`;
+    const response = await axios.get(movieEndpoint);
+
+    if (response.status !== 200) {
+      res.status(500).json({ message: 'Failed to fetch movies.' });
+      return;
+    }
+
+    const top5Movies = response.data.results.slice(0, 5);
+    res.json(top5Movies);
+  } catch (error) {
+    res.status(500).json({ message: error.toString() });
+  }
+});
+
+
+
 module.exports.handler = serverlessHttp(app);
