@@ -3,12 +3,19 @@ const serverlessHttp = require('serverless-http');
 const axios = require('axios');
 const cors = require('cors');
 const app = express();
+const cache = {};
+
 app.use(cors({
     origin: 'https://magenta-stardust-08f1b6.netlify.app'
 }));
 app.get('/.netlify/functions/getWeather', async (req, res) => {
   try {
     const { lat, lon } = req.query;
+
+    const cacheKey = `${lat},${lon}`;
+    if (cache[cacheKey]) {
+      return res.json(cache[cacheKey]);
+    }
  // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', 'https://magenta-stardust-08f1b6.netlify.app');
 
@@ -43,6 +50,9 @@ app.get('/.netlify/functions/getMovies', async (req, res) => {
 
     const top5Movies = response.data.results.slice(0, 5);
     res.json(top5Movies);
+ cache[cacheKey] = response.data;
+    res.json(response.data);
+    
   } catch (error) {
     res.status(500).json({ message: error.toString() });
   }
